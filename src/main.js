@@ -8,6 +8,21 @@ const refs = {
   themeToggle: document.querySelector('#themeToggle'),
 };
 
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  
+  if (savedTheme) {
+    document.body.className = savedTheme; 
+  } else {
+    document.body.className = 'theme-light'; 
+  }
+
+  const tasks = loadTasksFromLocalStorage();
+  refs.taskList.innerHTML = tasks
+    .map(task => createTaskMarkup(task))
+    .join('');
+});
+
 function saveTasksToLocalStorage(tasks) {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -76,27 +91,7 @@ function toggleTheme() {
   
   document.body.classList.replace(currentTheme, newTheme);
 
-  // Save the theme to localStorage
   localStorage.setItem('theme', newTheme);
 }
-
-// Apply the saved theme from localStorage on page load
-window.addEventListener('load', () => {
-  // Load tasks from localStorage and display them
-  const tasks = loadTasksFromLocalStorage();
-  refs.taskList.innerHTML = tasks
-    .map(task => createTaskMarkup(task))
-    .join('');
-
-  // Get the saved theme from localStorage and apply it
-  const savedTheme = localStorage.getItem('theme');
-  
-  // If there's a saved theme, apply it; otherwise, set default theme to light
-  if (savedTheme) {
-    document.body.className = savedTheme; // Apply the saved theme
-  } else {
-    document.body.className = 'theme-light'; // Default theme if no theme saved
-  }
-});
 
 refs.themeToggle.addEventListener('click', toggleTheme);
